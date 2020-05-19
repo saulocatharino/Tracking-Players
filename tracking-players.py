@@ -38,6 +38,9 @@ else:
 	vs = cv2.VideoCapture(args["video"])
 
 # loop dos frames do vídeo
+arq = open("log.txt","x")
+arq.write('id,x,y,w,h\n')
+arq.close()
 while True:
 	# pegar o frame atual e manipular se estiver usando um objeto videoStream ou VideoCapture.
 	frame = vs.read()
@@ -55,8 +58,11 @@ while True:
 	(success, boxes) = trackers.update(frame)
 
 	# loop sobre as boxs
-	for box in boxes:
+	for i, box in enumerate(boxes):
+		arq.open('log.txt','a')
 		(x, y, w, h) = [int(v) for v in box]
+		arq.write('{},{},{},{},{}\n'.format(str(i),str(x),str(y),str(w),str(h)))
+		arq.close()
 		cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
 	cv2.imshow("Frame", frame)
