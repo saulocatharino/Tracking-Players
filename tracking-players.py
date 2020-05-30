@@ -42,12 +42,16 @@ arq = open("log.txt","x")
 arq.write('id,x,y,w,h\n')
 arq.close()
 
+prev = vs.read()
+prev = prev[1]
+fourcc = cv2.VideoWriter_fourcc(*'XVID') # Cria o objeto para gravar vídeo
+out = cv2.VideoWriter('out.mp4', fourcc, 30.0, (prev.shape[1]*2 , prev.shape[0]))
 # loop dos frames do vídeo
 while True:
 	# pegar o frame atual e manipular se estiver usando um objeto videoStream ou VideoCapture.
 	frame = vs.read()
 	frame = frame[1] if args.get("video", False) else frame
-
+	out.write(frame)
 	# check to see if we have reached the end of the stream
 	if frame is None:
 		break
@@ -82,6 +86,7 @@ while True:
 		trackers.add(tracker, frame, box)
 
 	elif key == ord("q"):
+		out.release()
 		break
 
 if not args.get("video", False):
@@ -90,5 +95,5 @@ if not args.get("video", False):
 else:
 	vs.release()
 
- 
+out.release() 
 cv2.destroyAllWindows()
